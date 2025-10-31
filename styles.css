@@ -1,0 +1,178 @@
+:root{
+  --bg: #000000;          /* pure black */
+  --fg: #fdfccf;          /* cream */
+  --muted: #d6d5a6;
+  --accent: #c8c79a;      /* subtle borders/underlines */
+  --maxw: 760px;
+  --sidebar: 120px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+html{ scroll-behavior:smooth; }
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font: 18px/1.7 "STIX Two Text", ui-serif, Georgia, "Times New Roman", Times, serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Sidebar nav (chen.pw vibes) */
+.nav{
+  position:fixed;
+  top:26px; left:26px;
+  width:var(--sidebar);
+  display:flex; flex-direction:column; gap:8px;
+  z-index:5;
+}
+.nav a{
+  color:var(--fg);
+  text-decoration:none;
+  opacity:.85;
+  font-size:14px;
+}
+.nav a:hover{ opacity:1; text-decoration:underline; }
+.nav a.active{ text-decoration:underline; }
+
+/* Main column */
+.main{
+  max-width:var(--maxw);
+  margin: 56px auto 96px;
+  padding: 0 24px;
+}
+
+h1,h2,h3{ line-height:1.25; margin:1.2em 0 .45em; }
+h1{ font-size:34px; border-bottom:2px solid var(--accent); padding-bottom:.35em; }
+h2{ font-size:24px; margin-top:1.6em; }
+h3{ font-size:20px; }
+p,li{ color:var(--fg); }
+p.muted,.muted{ color:var(--muted); }
+
+a{ color:var(--fg); text-decoration: underline; text-decoration-color: var(--accent); }
+hr{ border:none; border-top:1px solid var(--accent); margin:24px 0; }
+
+/* Home splash */
+.logo-wrap{
+  min-height:calc(100vh - 120px);
+  display:grid; place-items:center;
+}
+.logo{ width:min(28vw, 280px); height:auto; }
+
+/* Lists (blog/slides) */
+.item{ margin: 26px 0 32px; }
+.item h3{ margin:0 0 6px; font-size:20px; }
+.item .dek{ font-style:italic; color:var(--muted); margin:0 0 8px; }
+.item .meta{ font-size:14px; }
+
+/* Optional avatar on research */
+.avatar{
+  float:right; width:132px; height:132px; border-radius:999px;
+  object-fit:cover; margin-left:18px; border:2px solid var(--accent);
+}
+
+/* Tables / code (if you ever need them) */
+table{ width:100%; border-collapse:collapse; margin:16px 0; }
+th,td{ border-bottom:1px solid var(--accent); padding:8px 6px; text-align:left; }
+code,pre{ background:#0a0a0a; border:1px solid #161616; color:var(--fg); }
+code{ padding:2px 6px; border-radius:4px; }
+pre{ padding:12px 14px; border-radius:6px; overflow:auto; }
+
+/* Mobile */
+@media (max-width: 860px){
+  .nav{ position:static; width:auto; padding:16px 24px 0; flex-direction:row; gap:16px; }
+  .main{ margin-top:12px; }
+  .avatar{ float:none; margin:0 0 12px; display:block; }
+}
+
+/* === universal colors === */
+:root {
+  --bg: #000000;
+  --fg: #fdfccf;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "STIX Two Text", serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* === home page layout === */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* === larger centered logo and tighter links === */
+.home-logo {
+  width: min(50vw, 10000px);   /* bigger logo */
+  height: auto;
+  margin-bottom: 0.8rem;     /* less vertical gap before links */
+  display: block;
+  filter: none;
+}
+
+.home-nav {
+  display: flex;
+  gap: 2rem;                 /* slightly tighter link spacing */
+  justify-content: center;
+  font-size: 1.15rem;
+  margin-top: 0;             /* keep close to logo */
+}
+
+.home-nav a {
+  color: var(--fg);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.home-nav a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transform: translateY(3vh); /* moves everything up slightly */
+}
+
+/* Centered container for selected pages (keeps inner text left-aligned) */
+.page-centered .main {
+  min-height: 100vh;
+  margin: 0 auto;            /* keep column centered horizontally */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* vertical centering */
+}
+
+/* Portrait image on research page (right-floated, text wraps on left) */
+.portrait {
+  float: right;
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  margin: 0 0 8px 16px;
+  border: none;
+  border-radius: 0;
+}
+
+@media (max-width: 860px){
+  /* allow some room for mobile UI while keeping center intent */
+  .page-centered .main { min-height: calc(100vh - 32px); }
+  .portrait { float: none; display: block; margin: 0 auto 12px; }
+}
+
