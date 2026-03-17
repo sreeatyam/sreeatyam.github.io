@@ -23,5 +23,84 @@
     </main>
   </div>
 
+  <!-- WIDGET: Nav (left-top, non-home only) -->
+  <div class="widget-pod widget-pod--left" id="wp-nav"
+      style="top: 8vh;">
+    <div class="widget-haze widget-haze--left"></div>
+    <div class="widget-panel widget-panel--left">
+      <div class="widget-label">nav</div>
+      <nav class="widget-nav-links">
+        <a href="/index.html">home</a>
+        <a href="/research.html">about</a>
+        <a href="/portfolio.html">portfolio</a>
+        <a href="/vitae.html">vitae</a>
+        <a href="/blog/">blog</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- WIDGET: Spotify (left-middle) -->
+  <div class="widget-pod widget-pod--left" id="wp-spotify"
+       style="top: 50%; transform: translateY(-50%);">
+    <div class="widget-haze widget-haze--left"></div>
+    <div class="widget-panel widget-panel--left">
+      <div class="widget-label">listening</div>
+      <iframe
+        src="https://open.spotify.com/embed/album/2pIpBDT8RtmJ5Vhb86BOcd?utm_source=generator&theme=0"
+        width="100%"
+        height="152"
+        frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- WIDGET: GitHub (left-bottom) -->
+  <div class="widget-pod widget-pod--left" id="wp-github"
+      style="bottom: 18vh;">
+    <div class="widget-haze widget-haze--left"></div>
+    <div class="widget-panel widget-panel--left">
+      <div class="widget-label">commits</div>
+      <div class="github-grid" id="github-grid"></div>
+    </div>
+  </div>
+
+  <!-- WIDGET: Updates (right-upper-middle) -->
+  <div class="widget-pod widget-pod--right" id="wp-updates"
+      style="top: 32vh;">
+    <div class="widget-haze widget-haze--right"></div>
+    <div class="widget-panel widget-panel--right">
+      <div class="widget-label">updates</div>
+      <div class="widget-text" id="updates-text"></div>
+    </div>
+  </div>
+
+  <!-- WIDGET: Reading (right-lower-middle) -->
+  <div class="widget-pod widget-pod--right" id="wp-reading"
+      style="top: 62vh;">
+    <div class="widget-haze widget-haze--right"></div>
+    <div class="widget-panel widget-panel--right">
+      <div class="widget-label">reading</div>
+      <div class="widget-text" id="reading-text"></div>
+      <div class="widget-bar">
+        <div class="widget-bar-fill" id="reading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIDGET: Home nav (bottom-center, home page only) -->
+  <div class="widget-pod widget-pod--bottom" id="wp-homenav">
+    <div class="widget-haze widget-haze--bottom"></div>
+    <div class="widget-panel widget-panel--bottom">
+      <nav class="widget-homenav-links">
+        <a href="/research.html">about</a>
+        <a href="/portfolio.html">portfolio</a>
+        <a href="/vitae.html">vitae</a>
+        <a href="/blog/">blog</a>
+      </nav>
+    </div>
+  </div>
+
 </body>
 </html>

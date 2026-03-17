@@ -5,9 +5,6 @@
   --accent: #c8c79a;      /* subtle borders/underlines */
   --maxw: 760px;
   --sidebar: 120px;
-  /* Home tuning knobs (edit these to experiment quickly). */
-  --home-logo-shift-y: -3vh;
-  --home-nav-shift-y: -6vh;
 }
 
 *{
@@ -16,13 +13,10 @@
   -webkit-touch-callout: none;
 }
 html,body{ height:100%; width:100%; }
-html{ scroll-behavior:smooth; }
-
-html:has(body.home){ overflow:hidden; }
-
-/* Hide the scrollbar on the home page — must target html (where the bar actually renders). */
-html:has(body.home){ scrollbar-width:none; }           /* Firefox */
-html:has(body.home)::-webkit-scrollbar{ display:none; } /* Chrome / Safari / Edge */
+html{
+  scroll-behavior:smooth;
+  scrollbar-gutter: stable;
+}
 
 body{
   margin:0;
@@ -59,16 +53,17 @@ body{
 }
 
 .content-blur-wrap {
+  transition: opacity 0.3s ease;
+}
+
+.content-blur-wrap {
   position: relative;
 }
 
 body.home .content-blur-wrap {
-  overflow: hidden;
   height: 100dvh;
-}
-
-body.home {
-  overflow: hidden;
+  min-height: 100dvh;
+  overflow: clip;
 }
 
 .content-blur-wrap::before,
@@ -399,30 +394,35 @@ body {
 /* === home page layout === */
 .home-container {
   min-height: 100dvh;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   padding: 24px;
+  gap: 0;
 }
 
-/* === home logo (independent from bottom nav) === */
+/* === home logo === */
 .home-logo {
   width: min(50vw, 10000px);
   height: auto;
   display: block;
   filter: none;
-  /* Move only logo up/down (does not move nav). */
-  transform: translateY(var(--home-logo-shift-y));
+  margin-bottom: 0;
 }
 
-/* Bottom nav is independently positioned from logo (but not fixed to viewport). */
 .home-nav {
-  position: relative;
-  transform: translateY(var(--home-nav-shift-y));
+  position: fixed;
+  bottom: 3vh;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 2rem;
   justify-content: center;
   font-size: 1.15rem;
+  white-space: nowrap;
+  z-index: 5;
 }
 
 .home-nav a {
@@ -474,9 +474,354 @@ body {
   .home-nav {
     gap: 1.4rem;
     font-size: 1.05rem;
+    bottom: 4vh;
   }
   .home-logo {
     width: min(72vw, 10000px);
   }
+}
+
+/* ── Widget pod: the positioning wrapper for each widget ── */
+.widget-pod {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Left pods: anchored to left edge */
+.widget-pod--left {
+  left: 0;
+  width: 220px;
+}
+
+/* Right pods: anchored to right edge */
+.widget-pod--right {
+  right: 0;
+  width: 220px;
+}
+
+/* Bottom pod: anchored to bottom center */
+.widget-pod--bottom {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+}
+
+@keyframes haze-breathe {
+  0%, 100% { opacity: 0.75; }
+  50%       { opacity: 0.25; }
+}
+
+/* ── Haze cloud ── */
+.widget-haze {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(ellipse at center,
+    rgba(253, 252, 207, 0.35) 0%,
+    rgba(253, 252, 207, 0.12) 40%,
+    transparent 70%
+  );
+  filter: blur(16px);
+  transition: opacity 0.5s ease, width 0.5s ease, height 0.5s ease,
+              transform 0.5s ease;
+  opacity: 0.75;
+  pointer-events: auto;
+  cursor: default;
+  animation: haze-breathe 3s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+/* Left haze: vertical oval on the left edge */
+.widget-haze--left {
+  left: -35px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 160px;
+}
+
+/* Right haze: vertical oval on the right edge */
+.widget-haze--right {
+  right: -35px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 160px;
+}
+
+/* Bottom haze: horizontal oval on the bottom edge */
+.widget-haze--bottom {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 56px;
+}
+
+.widget-pod.is-revealed .widget-haze {
+  animation: none;
+  opacity: 0;
+}
+
+/* Left haze explodes rightward and fades out on reveal */
+.widget-pod.is-revealed .widget-haze--left {
+  opacity: 0;
+  width: 160px;
+  height: 300px;
+  transform: translateY(-50%) translateX(40px);
+}
+
+/* Right haze explodes leftward and fades out on reveal */
+.widget-pod.is-revealed .widget-haze--right {
+  opacity: 0;
+  width: 160px;
+  height: 300px;
+  transform: translateY(-50%) translateX(-40px);
+}
+
+/* Bottom haze explodes upward and fades out on reveal */
+.widget-pod.is-revealed .widget-haze--bottom {
+  opacity: 0;
+  width: 320px;
+  height: 160px;
+  transform: translateX(-50%) translateY(-40px);
+}
+
+/* ── Widget panel: the actual content card ── */
+.widget-panel {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  background: rgba(6, 6, 4, 0.88);
+  border: 1px solid rgba(253, 252, 207, 0.08);
+  border-radius: 4px;
+  padding: 12px 14px;
+  width: 188px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Left panels: sit just off screen to the left, slide right on reveal */
+.widget-panel--left {
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%) translateX(-24px);
+}
+
+/* Right panels: sit just off screen to the right, slide left on reveal */
+.widget-panel--right {
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%) translateX(24px);
+}
+
+/* Bottom panel: sits below screen, slides up on reveal */
+.widget-panel--bottom {
+  bottom: 4px;
+  left: 50%;
+  width: auto;
+  white-space: nowrap;
+  transform: translateX(-50%) translateY(24px);
+}
+
+/* Revealed panel states */
+.widget-pod.is-revealed .widget-panel--left {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
+}
+.widget-pod.is-revealed .widget-panel--right {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
+}
+.widget-pod.is-revealed .widget-panel--bottom {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Widget internals ── */
+.widget-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.widget-text {
+  font-size: 12px;
+  color: var(--fg);
+  line-height: 1.5;
+}
+
+.widget-bar {
+  margin-top: 8px;
+  height: 2px;
+  background: rgba(253, 252, 207, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.widget-bar-fill {
+  height: 100%;
+  background: var(--muted);
+  border-radius: 1px;
+  transition: width 0.6s ease;
+}
+
+/* Nav widget links */
+.widget-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.widget-nav-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  font-style: italic;
+  transition: color 0.2s;
+}
+.widget-nav-links a:hover  { color: var(--fg); }
+.widget-nav-links a.active { color: var(--fg); font-weight: 700; }
+
+#wp-nav .widget-panel {
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  width: auto;
+}
+
+#wp-nav .widget-nav-links a {
+  font-size: 14px;
+  color: var(--fg);
+  opacity: 0.85;
+  font-style: normal;
+}
+
+#wp-nav .widget-nav-links a:hover {
+  opacity: 1;
+  font-style: italic;
+}
+
+#wp-nav .widget-nav-links a.active {
+  opacity: 1;
+  font-weight: 700;
+}
+
+#wp-nav {
+  display: none !important;
+}
+
+#wp-nav .widget-panel--left {
+  left: 26px;
+  top: 0;
+  transform: translateX(-16px);
+}
+
+#wp-nav.is-revealed .widget-panel--left {
+  transform: translateX(0);
+}
+
+/* Home nav widget links */
+.widget-homenav-links {
+  display: flex;
+  gap: 2rem;
+  padding: 10px 16px;
+}
+.widget-homenav-links a {
+  font-size: 1.05rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-style: italic;
+  transition: color 0.2s;
+}
+.widget-homenav-links a:hover { color: var(--fg); }
+
+#wp-homenav .widget-panel {
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  width: auto;
+  white-space: nowrap;
+}
+
+#wp-homenav .widget-homenav-links a {
+  font-size: 1.15rem;
+  color: var(--fg);
+  font-style: normal;
+  opacity: 0.85;
+}
+
+#wp-homenav .widget-homenav-links a:hover {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+#wp-homenav {
+  display: none !important;
+}
+
+#wp-homenav .widget-haze--bottom {
+  bottom: calc(6vh + 20px);
+}
+
+#wp-homenav .widget-panel--bottom {
+  bottom: calc(6vh);
+  transform: translateX(-50%) translateY(16px);
+}
+
+#wp-homenav.is-revealed .widget-panel--bottom {
+  transform: translateX(-50%) translateY(0);
+}
+
+#wp-spotify .widget-haze  { animation-delay: 0s; }
+#wp-github .widget-haze   { animation-delay: 0.75s; }
+#wp-updates .widget-haze  { animation-delay: 1.5s; }
+#wp-reading .widget-haze  { animation-delay: 2.25s; }
+#wp-spotify .widget-panel {
+  width: 380px;
+}
+
+#wp-spotify .widget-panel iframe {
+  height: 80px;
+}
+
+/* GitHub grid */
+.github-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 2px;
+  margin-top: 4px;
+}
+.github-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: rgba(253, 252, 207, 0.06);
+}
+.github-cell[data-level="1"] { background: rgba(253, 252, 207, 0.15); }
+.github-cell[data-level="2"] { background: rgba(253, 252, 207, 0.30); }
+.github-cell[data-level="3"] { background: rgba(253, 252, 207, 0.50); }
+.github-cell[data-level="4"] { background: rgba(253, 252, 207, 0.75); }
+
+/* Spotify iframe */
+.widget-panel iframe {
+  border-radius: 4px;
+  margin-top: 4px;
+  display: block;
+  filter: grayscale(0.3) brightness(0.85);
+}
+
+/* Mobile */
+@media (hover: none) {
+  .widget-pod { pointer-events: auto; }
 }
 
