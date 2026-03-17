@@ -91,6 +91,10 @@ async function initLiquidBackground() {
     const app = LiquidBackground(canvas);
     if (app.renderer) {
       app.renderer.setClearColor(0x000000, 1);
+      app.renderer.setPixelRatio(window.devicePixelRatio);
+    }
+    if (app.scene) {
+      app.scene.background = null;
     }
     canvas.style.width  = '100vw';
     canvas.style.height = '100vh';
