@@ -37,10 +37,10 @@
       <div id="projects-panel" class="expandable-panel" hidden>
 
         <div class="portfolio-card">
-          <!-- Local thumbnail is more reliable on mobile than external OG endpoints -->
+          <!-- GitHub OG thumbnail with local fallback to avoid broken image states -->
           <a href="https://github.com/sreeatyam/traice" target="_blank" rel="noopener" class="portfolio-thumb-link" tabindex="-1">
             <div class="portfolio-thumb">
-              <img src="/assets/traice-thumb.svg" loading="lazy" alt="traice github repo preview">
+              <img src="https://opengraph.githubassets.com/1/sreeatyam/traice" loading="lazy" alt="traice github repo preview" onerror="this.onerror=null;this.src='/assets/traice-thumb.svg';">
             </div>
           </a>
           <div class="portfolio-card-body">
