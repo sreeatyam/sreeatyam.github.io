@@ -170,6 +170,8 @@ if (document.readyState === 'loading') {
 
 function initWidgets() {
   const PROXIMITY = 25;
+  const isMobileWidgetsOff = window.matchMedia('(max-width: 1024px), (pointer: coarse)').matches;
+  if (isMobileWidgetsOff) return;
   const isHome = document.body.classList.contains('home');
 
   // Mark active nav link
@@ -266,8 +268,12 @@ if (document.readyState === 'loading') {
 }
 
 function initPjax() {
+  const isMobilePjaxOff = window.matchMedia('(max-width: 1024px), (pointer: coarse)').matches;
+  if (isMobilePjaxOff) return;
+
   // Fade duration in ms — match this to the CSS transition below
   const FADE_MS = 300;
+  let isNavigating = false;
 
   function getMainContent(htmlString) {
     const parser = new DOMParser();
@@ -281,21 +287,30 @@ function initPjax() {
   }
 
   async function navigateTo(href) {
-    const wrap = document.querySelector('.content-blur-wrap');
-    if (!wrap) return;
+    if (isNavigating) return;
+    isNavigating = true;
 
-    const existingNav = document.querySelector('.nav');
-
-    // Fade out content and nav together
-    wrap.style.transition = `opacity ${FADE_MS}ms ease`;
-    wrap.style.opacity = '0';
-
-    if (existingNav) {
-      existingNav.style.transition = `opacity ${FADE_MS}ms ease`;
-      existingNav.style.opacity = '0';
-    }
+    let wrap = null;
+    let existingNav = null;
 
     try {
+      wrap = document.querySelector('.content-blur-wrap');
+      if (!wrap) {
+        window.location.href = href;
+        return;
+      }
+
+      existingNav = document.querySelector('.nav');
+
+      // Fade out content and nav together
+      wrap.style.transition = `opacity ${FADE_MS}ms ease`;
+      wrap.style.opacity = '0';
+
+      if (existingNav) {
+        existingNav.style.transition = `opacity ${FADE_MS}ms ease`;
+        existingNav.style.opacity = '0';
+      }
+
       const res  = await fetch(href);
       const html = await res.text();
       const { main, title, bodyClass, doc } = getMainContent(html);
@@ -337,6 +352,23 @@ function initPjax() {
       document.body.className = isHome ? 'home' : bodyClass;
       updateBlur();
 
+      // Ensure home has no sidebar nav, and non-home has exactly one nav.
+      if (isHome) {
+        document.querySelectorAll('.nav').forEach((node) => node.remove());
+      } else {
+        const navs = Array.from(document.querySelectorAll('.nav'));
+        if (navs.length === 0 && fetchedNav) {
+          const navEl = document.importNode(fetchedNav, true);
+          navEl.style.opacity = '0';
+          navEl.style.transition = `opacity ${FADE_MS}ms ease`;
+          document.body.insertBefore(navEl, wrap);
+        }
+        const dedupedNavs = Array.from(document.querySelectorAll('.nav'));
+        if (dedupedNavs.length > 1) {
+          dedupedNavs.slice(1).forEach((node) => node.remove());
+        }
+      }
+
       // Update URL
       history.pushState({ href }, title, href);
 
@@ -362,7 +394,11 @@ function initPjax() {
       });
 
     } catch (err) {
+      if (wrap) wrap.style.opacity = '1';
+      if (existingNav) existingNav.style.opacity = '1';
       window.location.href = href;
+    } finally {
+      isNavigating = false;
     }
   }
 

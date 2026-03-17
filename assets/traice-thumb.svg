@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="592" height="304" viewBox="0 0 592 304" role="img" aria-labelledby="title desc">
+  <title id="title">traice project thumbnail</title>
+  <desc id="desc">Stylized project card for traice.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0d0f14"/>
+      <stop offset="100%" stop-color="#131923"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.12" cy="0.22" r="0.8">
+      <stop offset="0%" stop-color="#fdfccf" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#fdfccf" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="592" height="304" rx="18" fill="url(#bg)"/>
+  <rect width="592" height="304" rx="18" fill="url(#glow)"/>
+  <rect x="26" y="24" width="540" height="256" rx="14" fill="none" stroke="#fdfccf" stroke-opacity="0.2"/>
+
+  <text x="48" y="88" fill="#fdfccf" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700">traice</text>
+  <text x="48" y="130" fill="#d6d5a6" font-family="Georgia, 'Times New Roman', serif" font-size="20">autonomous research intelligence engine</text>
+
+  <rect x="48" y="172" width="204" height="8" rx="4" fill="#fdfccf" fill-opacity="0.35"/>
+  <rect x="48" y="194" width="168" height="8" rx="4" fill="#fdfccf" fill-opacity="0.2"/>
+  <rect x="48" y="216" width="140" height="8" rx="4" fill="#fdfccf" fill-opacity="0.14"/>
+</svg>

@@ -833,21 +833,8 @@ body {
     --content-pad: 18px;
   }
 
-  .widget-pod--left,
-  .widget-pod--right {
+  .widget-pod {
     display: none !important;
-  }
-
-  #wp-homenav {
-    display: block !important;
-  }
-
-  #wp-homenav .widget-haze--bottom {
-    bottom: calc(3vh + 10px);
-  }
-
-  #wp-homenav .widget-panel--bottom {
-    bottom: calc(3vh);
   }
 
   .main,
