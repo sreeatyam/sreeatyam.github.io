@@ -5,6 +5,13 @@
   --accent: #c8c79a;      /* subtle borders/underlines */
   --maxw: 760px;
   --sidebar: 120px;
+  --content-pad: 24px;
+  --widget-rail-desktop: 240px;
+  --widget-rail-laptop: 188px;
+  --widget-rail: var(--widget-rail-desktop);
+  --widget-panel-min: 164px;
+  --widget-panel-max: 220px;
+  --spotify-panel-max: 320px;
 }
 
 *{
@@ -91,6 +98,13 @@ body.home .content-blur-wrap {
   opacity: var(--blur-bottom, 0);
 }
 
+@media (max-width: 900px), (pointer: coarse) {
+  .content-blur-wrap::before,
+  .content-blur-wrap::after {
+    opacity: 0 !important;
+  }
+}
+
 /* Sidebar nav (chen.pw vibes) */
 .nav{
   position:fixed;
@@ -111,8 +125,9 @@ body.home .content-blur-wrap {
 /* Main column */
 .main{
   max-width:var(--maxw);
+  width: min(var(--maxw), calc(100vw - (2 * var(--widget-rail)) - (2 * var(--content-pad))));
   margin: 56px auto 96px;
-  padding: 0 24px;
+  padding: 0 var(--content-pad);
 }
 
 h1,h2,h3{ line-height:1.25; margin:1.2em 0 .45em; }
@@ -399,8 +414,10 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 24px;
+  width: min(var(--maxw), calc(100vw - (2 * var(--widget-rail)) - (2 * var(--content-pad))));
+  padding: 24px var(--content-pad);
   gap: 0;
+  margin: 0 auto;
 }
 
 /* === home logo === */
@@ -492,13 +509,13 @@ body {
 /* Left pods: anchored to left edge */
 .widget-pod--left {
   left: 0;
-  width: 220px;
+  width: var(--widget-rail);
 }
 
 /* Right pods: anchored to right edge */
 .widget-pod--right {
   right: 0;
-  width: 220px;
+  width: var(--widget-rail);
 }
 
 /* Bottom pod: anchored to bottom center */
@@ -599,7 +616,7 @@ body {
   border: 1px solid rgba(253, 252, 207, 0.08);
   border-radius: 4px;
   padding: 12px 14px;
-  width: 188px;
+  width: clamp(var(--widget-panel-min), 18vw, var(--widget-panel-max));
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -788,11 +805,66 @@ body {
 #wp-updates .widget-haze  { animation-delay: 1.5s; }
 #wp-reading .widget-haze  { animation-delay: 2.25s; }
 #wp-spotify .widget-panel {
-  width: 380px;
+  width: clamp(220px, 28vw, var(--spotify-panel-max));
 }
 
 #wp-spotify .widget-panel iframe {
-  height: 80px;
+  height: clamp(72px, 9vw, 96px);
+}
+
+/* Laptop + scaled desktop: narrow rails, slightly tighter cards, hide heavy Spotify pod */
+@media (max-width: 1360px) {
+  :root {
+    --widget-rail: var(--widget-rail-laptop);
+    --widget-panel-max: 196px;
+    --spotify-panel-max: 280px;
+    --content-pad: 20px;
+  }
+
+  #wp-spotify {
+    display: none;
+  }
+}
+
+/* Tablet + mobile: content-first layout with bottom dock only */
+@media (max-width: 1024px), (pointer: coarse) {
+  :root {
+    --widget-rail: 0px;
+    --content-pad: 18px;
+  }
+
+  .widget-pod--left,
+  .widget-pod--right {
+    display: none !important;
+  }
+
+  #wp-homenav {
+    display: block !important;
+  }
+
+  #wp-homenav .widget-haze--bottom {
+    bottom: calc(3vh + 10px);
+  }
+
+  #wp-homenav .widget-panel--bottom {
+    bottom: calc(3vh);
+  }
+
+  .main,
+  .home-container,
+  .page-centered .main,
+  .blog-post .main {
+    width: min(var(--maxw), 100vw);
+    max-width: var(--maxw);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--content-pad);
+    padding-right: var(--content-pad);
+  }
+
+  .home-container {
+    min-height: calc(100dvh - 64px);
+  }
 }
 
 /* GitHub grid */

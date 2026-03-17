@@ -5,6 +5,12 @@ function updateBlur() {
     document.body.style.setProperty('--blur-bottom', '0');
     return;
   }
+  const disableScrollBlur = window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
+  if (disableScrollBlur) {
+    document.body.style.setProperty('--blur-top', '0');
+    document.body.style.setProperty('--blur-bottom', '0');
+    return;
+  }
   const isScrollable = doc.scrollHeight > window.innerHeight + 16;
   const maxScroll = doc.scrollHeight - window.innerHeight;
   const progress = isScrollable && maxScroll > 0 ? window.scrollY / maxScroll : 0;
@@ -297,6 +303,8 @@ function initPjax() {
       await new Promise(r => setTimeout(r, FADE_MS));
 
       if (!main) {
+        wrap.style.opacity = '1';
+        if (existingNav) existingNav.style.opacity = '1';
         window.location.href = href;
         return;
       }
@@ -364,13 +372,24 @@ function initPjax() {
     if (!link) return;
 
     const href = link.getAttribute('href');
+    const resolvedPath = (() => {
+      try {
+        return new URL(link.href, location.origin).pathname.toLowerCase();
+      } catch {
+        return '';
+      }
+    })();
+    const isRedirectStub = ['/vitae.html', '/blog.html', '/slides.html'].includes(resolvedPath);
+    const isPdfLink = resolvedPath.endsWith('.pdf');
     if (
       !href ||
       href.startsWith('http') ||
       href.startsWith('mailto') ||
       href.startsWith('#') ||
       href.startsWith('javascript') ||
-      link.target === '_blank'
+      link.target === '_blank' ||
+      isRedirectStub ||
+      isPdfLink
     ) return;
 
     e.preventDefault();
