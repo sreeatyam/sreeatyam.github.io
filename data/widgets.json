@@ -1,8 +1,8 @@
 {
-  "updates": "tuning sampler hyperparams for the mcmc paper",
+  "updates": "looking over ldl factorization for dense matrices for new project",
   "reading": {
-    "title": "The Dream Machine",
-    "author": "M. Mitchell Waldrop",
+    "title": "Understand",
+    "author": "Ted Chiang",
     "progress": 0.42
   }
 }
