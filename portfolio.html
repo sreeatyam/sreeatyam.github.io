@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/assets/sreefav1.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/sreefav1.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/sreefav1.png">
+  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600;700&display=swap" rel="stylesheet">
+   <script src="/assets/site.js" defer></script>
+  <title>Sreevardhan Atyam — Portfolio</title>
+</head>
+<body class="page-centered">
+
+  <nav class="nav">
+    <a href="/">home</a>
+    <a href="/research.html">about</a>
+    <a href="/portfolio.html" class="active">portfolio</a>
+    <a href="/vitae.html">vitae</a>
+    <a href="/blog/">blog</a>
+  </nav>
+
+  <div class="content-blur-wrap">
+    <main class="main">
+      <h1>portfolio</h1>
+      <p class="muted">selected projects, research, and patents.</p>
+
+    <!-- ═══ PROJECTS ═══ -->
+    <section class="expandable" data-expandable>
+      <div class="expandable-head">
+        <h2>projects</h2>
+        <button type="button" class="expand-btn" aria-expanded="false" aria-controls="projects-panel" data-expand-toggle>
+          <span class="expand-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div id="projects-panel" class="expandable-panel" hidden>
+
+        <div class="portfolio-card">
+          <!-- GitHub OG thumbnail — swap src if repo gets a custom social preview -->
+          <a href="https://github.com/sreeatyam/traice" target="_blank" rel="noopener" class="portfolio-thumb-link" tabindex="-1">
+            <div class="portfolio-thumb">
+              <img src="https://opengraph.github.com/repo/sreeatyam/traice" alt="traice github repo preview">
+            </div>
+          </a>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-title">traice</div>
+            <div class="portfolio-card-meta">Mar 2026 – Present · University of Illinois Urbana-Champaign</div>
+            <p class="portfolio-card-desc">autonomous research engine that synthesizes browsing behavior into structured intelligence. built w/ async cloudflare workers ingestion layer and gpt-4o-mini orchestration to convert ephemeral dwelltime and dom signals into structured intelligence.</p>
+            <a href="https://github.com/sreeatyam/traice" target="_blank" rel="noopener" class="portfolio-learn-more">learn more →</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ RESEARCH ═══ -->
+    <section class="expandable" data-expandable>
+      <div class="expandable-head">
+        <h2>research</h2>
+        <button type="button" class="expand-btn" aria-expanded="false" aria-controls="research-panel" data-expand-toggle>
+          <span class="expand-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div id="research-panel" class="expandable-panel" hidden>
+
+        <h3>posters</h3>
+
+        <div class="portfolio-card">
+          <!-- PDF first-page thumbnail via scaled iframe -->
+          <a href="/slides/qsim_mcmc_poster.pdf" target="_blank" rel="noopener" class="portfolio-thumb-link" tabindex="-1">
+            <div class="portfolio-thumb pdf-thumb">
+              <iframe src="/slides/qsim_mcmc_poster.pdf#toolbar=0&navpanes=0&scrollbar=0"
+                      scrolling="no" tabindex="-1" aria-label="qsim mcmc poster thumbnail"></iframe>
+            </div>
+          </a>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-title">Approximating Tensor Network Contractions w/ AIS</div>
+            <div class="portfolio-card-meta">Jan 2025 – Present · University of Illinois Urbana-Champaign</div>
+            <p class="portfolio-card-desc">high-performance simulation framework approximating complex tensor network contractions via ais and mcmc orchestration. optimized annealing ladders and parallel chains to reach &lt; 0.1% relative error across 2×2 rings and random ising instances.</p>
+            <a href="/slides/qsim_mcmc_poster.pdf" target="_blank" rel="noopener" class="portfolio-learn-more">view poster →</a>
+          </div>
+        </div>
+
+        <h3>pubs</h3>
+        <p class="muted">in progress</p>
+
+      </div>
+    </section>
+
+    <!-- ═══ PATENTS ═══ -->
+    <section class="expandable" data-expandable>
+      <div class="expandable-head">
+        <h2>patents</h2>
+        <button type="button" class="expand-btn" aria-expanded="false" aria-controls="patents-panel" data-expand-toggle>
+          <span class="expand-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div id="patents-panel" class="expandable-panel" hidden>
+
+        <div class="patent-card">
+          <div class="patent-card-title">Systems and Methods for Catastrophe Asset and Resource Management</div>
+          <div class="patent-card-meta">US Application 19/394,243 · Filed Nov 19, 2025</div>
+          <p class="patent-card-desc">architecting high-dimensional vector/graph hybrid dataspaces to minimize retrieval noise and optimize rag latency for automated asset management workflows. developed + filed through state farm.</p>
+        </div>
+
+      </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const toggles = document.querySelectorAll('[data-expand-toggle]');
+
+      function openPanel(toggle, panel) {
+        panel.hidden = false;
+        panel.classList.add('is-open');
+        panel.style.maxHeight = '0px';
+        requestAnimationFrame(() => {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        });
+
+        const onOpenEnd = (event) => {
+          if (event.propertyName !== 'max-height') return;
+          panel.style.maxHeight = 'none';
+          panel.removeEventListener('transitionend', onOpenEnd);
+        };
+
+        panel.addEventListener('transitionend', onOpenEnd);
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+
+      function closePanel(toggle, panel) {
+        if (panel.style.maxHeight === 'none' || !panel.style.maxHeight) {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+        panel.classList.remove('is-open');
+
+        requestAnimationFrame(() => {
+          panel.style.maxHeight = '0px';
+        });
+
+        const onCloseEnd = (event) => {
+          if (event.propertyName !== 'max-height') return;
+          panel.hidden = true;
+          panel.style.maxHeight = '';
+          panel.removeEventListener('transitionend', onCloseEnd);
+        };
+
+        panel.addEventListener('transitionend', onCloseEnd);
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      toggles.forEach((toggle) => {
+        const panelId = toggle.getAttribute('aria-controls');
+        const panel = panelId ? document.getElementById(panelId) : null;
+        if (!panel) return;
+
+        toggle.addEventListener('click', () => {
+          const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+          if (isOpen) {
+            closePanel(toggle, panel);
+          } else {
+            openPanel(toggle, panel);
+          }
+        });
+      });
+    }());
+  </script>
+
+</body>
+</html>

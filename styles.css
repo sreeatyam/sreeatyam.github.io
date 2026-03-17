@@ -5,11 +5,24 @@
   --accent: #c8c79a;      /* subtle borders/underlines */
   --maxw: 760px;
   --sidebar: 120px;
+  /* Home tuning knobs (edit these to experiment quickly). */
+  --home-logo-shift-y: -3vh;
+  --home-nav-shift-y: -6vh;
 }
 
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+html,body{ height:100%; width:100%; }
 html{ scroll-behavior:smooth; }
+
+html:has(body.home){ overflow:hidden; }
+
+/* Hide the scrollbar on the home page — must target html (where the bar actually renders). */
+html:has(body.home){ scrollbar-width:none; }           /* Firefox */
+html:has(body.home)::-webkit-scrollbar{ display:none; } /* Chrome / Safari / Edge */
 
 body{
   margin:0;
@@ -18,6 +31,68 @@ body{
   font: 18px/1.7 "STIX Two Text", ui-serif, Georgia, "Times New Roman", Times, serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#liquid-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
+  touch-action: none;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.home-container,
+.main,
+.content-blur-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.content-blur-wrap {
+  position: relative;
+}
+
+body.home .content-blur-wrap {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+body.home {
+  overflow: hidden;
+}
+
+.content-blur-wrap::before,
+.content-blur-wrap::after {
+  content: '';
+  position: fixed;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  height: 160px;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity 0.4s ease;
+}
+
+.content-blur-wrap::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+  opacity: var(--blur-top, 0);
+}
+
+.content-blur-wrap::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
+  opacity: var(--blur-bottom, 0);
 }
 
 /* Sidebar nav (chen.pw vibes) */
@@ -34,8 +109,8 @@ body{
   opacity:.85;
   font-size:14px;
 }
-.nav a:hover{ opacity:1; text-decoration:underline; }
-.nav a.active{ text-decoration:underline; }
+.nav a:hover{ opacity:1; font-style:italic; text-decoration:none; }
+.nav a.active{ opacity:1; font-weight:700; text-decoration:none; }
 
 /* Main column */
 .main{
@@ -51,7 +126,13 @@ h3{ font-size:20px; }
 p,li{ color:var(--fg); }
 p.muted,.muted{ color:var(--muted); }
 
-a{ color:var(--fg); text-decoration: underline; text-decoration-color: var(--accent); }
+p, h1, h2, h3, h4, li, td, th, code, pre, blockquote, .selectable {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+a{ color:var(--fg); text-decoration: none; }
+a:hover{ font-style:italic; text-decoration:none; }
 hr{ border:none; border-top:1px solid var(--accent); margin:24px 0; }
 
 /* Home splash */
@@ -61,11 +142,224 @@ hr{ border:none; border-top:1px solid var(--accent); margin:24px 0; }
 }
 .logo{ width:min(28vw, 280px); height:auto; }
 
-/* Lists (blog/slides) */
+/* Lists (blog/portfolio) */
 .item{ margin: 26px 0 32px; }
 .item h3{ margin:0 0 6px; font-size:20px; }
 .item .dek{ font-style:italic; color:var(--muted); margin:0 0 8px; }
 .item .meta{ font-size:14px; }
+
+/* Portfolio expand/collapse sections */
+.expandable{
+  padding-top: 0;
+  margin-top: 20px;
+}
+
+.expandable-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.expandable-head h2{
+  margin:0;
+}
+
+.expand-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:22px;
+  padding:0;
+  border:none;
+  background:none;
+  color:var(--fg);
+  cursor:pointer;
+  transition: opacity .2s ease;
+}
+
+.expand-btn:hover{ opacity:.8; }
+
+.expand-icon{
+  position:relative;
+  display:block;
+  width:14px;
+  height:14px;
+  transform: rotate(0deg);
+  transition: transform .28s ease;
+}
+
+.expand-icon::before,
+.expand-icon::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:14px;
+  height:1.5px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.expand-icon::after{
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.expand-btn[aria-expanded="true"] .expand-icon{
+  transform: rotate(45deg);
+}
+
+.expandable-panel{
+  margin-top: 12px;
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transition:max-height .34s ease, opacity .24s ease;
+}
+
+.expandable-panel.is-open{
+  opacity:1;
+}
+
+.expandable-panel h3{
+  margin-top: 1.4em;
+  font-size: 17px;
+}
+
+.expandable-panel h3:first-child{
+  margin-top: 4px;
+}
+
+/* Portfolio / research cards */
+.portfolio-card{
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+  margin: 14px 0;
+  padding-top: 14px;
+  border-top: 1px solid #1e1e1e;
+}
+
+.portfolio-card:first-of-type{
+  border-top:none;
+  padding-top:0;
+}
+
+.portfolio-thumb-link{
+  flex-shrink:0;
+  text-decoration:none;
+}
+
+/* Image thumbnails (e.g. GitHub OG card) */
+.portfolio-thumb{
+  width:148px;
+  height:76px;
+  overflow:hidden;
+  border:none;
+  border-radius:8px;
+  background:transparent;
+}
+
+.portfolio-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  border-radius:8px;
+  display:block;
+}
+
+/* PDF first-page thumbnail via scaled-down iframe */
+.pdf-thumb{
+  width:148px;
+  height:76px;
+  overflow:hidden;
+  border:none;
+  border-radius:8px;
+  background:#0d0d0d;
+  position:relative;
+}
+
+.pdf-thumb iframe{
+  width:816px;        /* browser default PDF viewport width */
+  height:1056px;      /* US-letter height at 96dpi */
+  transform:scale(0.1814);   /* 148 / 816 ≈ 0.1814 to match thumbnail width */
+  transform-origin:0 0;
+  pointer-events:none;
+  border:none;
+}
+
+.portfolio-card-body{
+  flex:1;
+  min-width:0;
+}
+
+.portfolio-card-title{
+  font-weight:600;
+  font-size:15px;
+  margin-bottom:3px;
+  color:var(--fg);
+}
+
+.portfolio-card-meta{
+  font-size:13px;
+  color:var(--muted);
+  margin:0 0 8px;
+}
+
+.portfolio-card-desc{
+  font-size:14px;
+  line-height:1.55;
+  margin:0 0 10px;
+  color:var(--fg);
+}
+
+/* "learn more" / "view poster" link inside a card */
+.portfolio-learn-more{
+  font-size:13px;
+  color:var(--fg);
+  text-decoration:none;
+  opacity:.75;
+}
+
+.portfolio-learn-more:hover{
+  opacity:1;
+  font-style:italic;
+  text-decoration:none;
+}
+
+/* Patent cards */
+.patent-card{
+  margin:14px 0;
+  padding-top:14px;
+  border-top:1px solid #1e1e1e;
+}
+
+.patent-card:first-of-type{
+  border-top:none;
+  padding-top:0;
+}
+
+.patent-card-title{
+  font-weight:600;
+  font-size:15px;
+  margin-bottom:4px;
+  color:var(--fg);
+}
+
+.patent-card-meta{
+  font-size:13px;
+  color:var(--muted);
+  margin:0 0 8px;
+}
+
+.patent-card-desc{
+  font-size:14px;
+  line-height:1.55;
+  color:var(--fg);
+  margin:0;
+}
 
 /* Optional avatar on research */
 .avatar{
@@ -103,29 +397,31 @@ body {
 
 /* === home page layout === */
 .home-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
   text-align: center;
+  padding: 24px;
 }
 
-/* === larger centered logo and tighter links === */
+/* === home logo (independent from bottom nav) === */
 .home-logo {
-  width: min(50vw, 10000px);   /* bigger logo */
+  width: min(50vw, 10000px);
   height: auto;
-  margin-bottom: 0.8rem;     /* less vertical gap before links */
   display: block;
   filter: none;
+  /* Move only logo up/down (does not move nav). */
+  transform: translateY(var(--home-logo-shift-y));
 }
 
+/* Bottom nav is independently positioned from logo (but not fixed to viewport). */
 .home-nav {
+  position: relative;
+  transform: translateY(var(--home-nav-shift-y));
   display: flex;
-  gap: 2rem;                 /* slightly tighter link spacing */
+  gap: 2rem;
   justify-content: center;
   font-size: 1.15rem;
-  margin-top: 0;             /* keep close to logo */
 }
 
 .home-nav a {
@@ -136,18 +432,8 @@ body {
 
 .home-nav a:hover {
   opacity: 0.7;
-  text-decoration: underline;
-}
-
-
-.home-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  transform: translateY(3vh); /* moves everything up slightly */
+  font-style: italic;
+  text-decoration: none;
 }
 
 /* Centered container for selected pages (keeps inner text left-aligned) */
@@ -157,6 +443,15 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;   /* vertical centering */
+}
+
+/* Blog post pages: use body class="blog-post" for centered post layout. */
+.blog-post .main {
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Portrait image on research page (right-floated, text wraps on left) */
@@ -173,6 +468,14 @@ body {
 @media (max-width: 860px){
   /* allow some room for mobile UI while keeping center intent */
   .page-centered .main { min-height: calc(100vh - 32px); }
+  .blog-post .main { min-height: calc(100vh - 32px); }
   .portrait { float: none; display: block; margin: 0 auto 12px; }
+  .home-nav {
+    gap: 1.4rem;
+    font-size: 1.05rem;
+  }
+  .home-logo {
+    width: min(72vw, 10000px);
+  }
 }
 
