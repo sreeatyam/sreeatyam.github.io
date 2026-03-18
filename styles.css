@@ -826,11 +826,11 @@ body {
   }
 
   #wp-spotify .widget-panel {
-    width: clamp(168px, 20vw, 220px);
+    width: clamp(180px, 22vw, var(--spotify-panel-max));
   }
 
   #wp-spotify .widget-panel iframe {
-    height: clamp(70px, 6.5vw, 84px);
+    height: clamp(72px, 7vw, 88px);
   }
 }
 
