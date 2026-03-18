@@ -833,6 +833,10 @@ body {
     --content-pad: 18px;
   }
 
+  #liquid-canvas {
+    display: none !important;
+  }
+
   .widget-pod {
     display: none !important;
   }

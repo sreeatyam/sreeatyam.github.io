@@ -25,6 +25,29 @@ function updateBlur() {
   );
 }
 
+function isMobileLiquidDisabled() {
+  return window.matchMedia('(max-width: 1024px), (pointer: coarse)').matches;
+}
+
+function teardownLiquidBackground() {
+  const existingCanvas = document.getElementById('liquid-canvas');
+  if (existingCanvas) {
+    existingCanvas.remove();
+  }
+
+  const existingApp = window.__liquidApp;
+  if (existingApp && typeof existingApp.destroy === 'function') {
+    try {
+      existingApp.destroy();
+    } catch (err) {
+      console.warn('Liquid background cleanup failed.', err);
+    }
+  }
+
+  window.__liquidApp = null;
+  window.__triggerLiquidResize = null;
+}
+
 function ensureLiquidCanvas() {
   let canvas = document.getElementById('liquid-canvas');
   if (canvas) {
@@ -88,6 +111,11 @@ function setupLiquidMouseRestrictions() {
 }
 
 async function initLiquidBackground() {
+  if (isMobileLiquidDisabled()) {
+    teardownLiquidBackground();
+    return;
+  }
+
   const canvas = ensureLiquidCanvas();
 
   try {
