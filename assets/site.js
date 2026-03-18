@@ -127,7 +127,7 @@ async function initLiquidBackground() {
     let lastW = initialSize.width;
     let lastH = initialSize.height;
 
-    window.addEventListener('resize', () => {
+    function applyLiquidResize() {
       const { width, height } = getViewportSize();
       if (width === lastW && height === lastH) return;
       lastW = width;
@@ -137,7 +137,10 @@ async function initLiquidBackground() {
       if (app.resize)   app.resize();
       if (app.onResize) app.onResize();
       if (app.setSize)  app.setSize(width, height);
-    }, { passive: true });
+    }
+
+    window.__triggerLiquidResize = applyLiquidResize;
+    window.addEventListener('resize', applyLiquidResize, { passive: true });
 
     canvas.style.pointerEvents = 'none';
     canvas.style.border  = 'none';
@@ -447,6 +450,20 @@ function initPjax() {
 
 function initExpandable() {
   const toggles = document.querySelectorAll('[data-expand-toggle]');
+  const LIQUID_RESIZE_DEBOUNCE_MS = 80;
+  let liquidResizeTimer = null;
+
+  function scheduleLiquidResize() {
+    if (liquidResizeTimer) {
+      clearTimeout(liquidResizeTimer);
+    }
+    liquidResizeTimer = setTimeout(() => {
+      liquidResizeTimer = null;
+      if (typeof window.__triggerLiquidResize === 'function') {
+        window.__triggerLiquidResize();
+      }
+    }, LIQUID_RESIZE_DEBOUNCE_MS);
+  }
 
   function openPanel(toggle, panel) {
     panel.hidden = false;
@@ -459,6 +476,7 @@ function initExpandable() {
       if (e.propertyName !== 'max-height') return;
       panel.style.maxHeight = 'none';
       panel.removeEventListener('transitionend', onOpenEnd);
+      scheduleLiquidResize();
     };
     panel.addEventListener('transitionend', onOpenEnd);
     toggle.setAttribute('aria-expanded', 'true');
@@ -477,6 +495,7 @@ function initExpandable() {
       panel.hidden = true;
       panel.style.maxHeight = '';
       panel.removeEventListener('transitionend', onCloseEnd);
+      scheduleLiquidResize();
     };
     panel.addEventListener('transitionend', onCloseEnd);
     toggle.setAttribute('aria-expanded', 'false');
