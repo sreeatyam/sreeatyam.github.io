@@ -505,6 +505,7 @@ function initExpandable() {
       panel.style.maxHeight = 'none';
       panel.removeEventListener('transitionend', onOpenEnd);
       scheduleLiquidResize();
+      window.dispatchEvent(new Event('resize'));
     };
     panel.addEventListener('transitionend', onOpenEnd);
     toggle.setAttribute('aria-expanded', 'true');
@@ -524,6 +525,7 @@ function initExpandable() {
       panel.style.maxHeight = '';
       panel.removeEventListener('transitionend', onCloseEnd);
       scheduleLiquidResize();
+      window.dispatchEvent(new Event('resize'));
     };
     panel.addEventListener('transitionend', onCloseEnd);
     toggle.setAttribute('aria-expanded', 'false');

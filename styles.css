@@ -23,6 +23,7 @@ html,body{ height:100%; width:100%; }
 html{
   scroll-behavior:smooth;
   scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
 body{
@@ -125,7 +126,7 @@ body.home .content-blur-wrap {
 /* Main column */
 .main{
   max-width:var(--maxw);
-  width: min(var(--maxw), calc(100vw - (2 * var(--widget-rail)) - (2 * var(--content-pad))));
+  width: min(var(--maxw), calc(100% - (2 * var(--widget-rail)) - (2 * var(--content-pad))));
   margin: 56px auto 96px;
   padding: 0 var(--content-pad);
 }
@@ -414,7 +415,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: min(var(--maxw), calc(100vw - (2 * var(--widget-rail)) - (2 * var(--content-pad))));
+  width: min(var(--maxw), calc(100% - (2 * var(--widget-rail)) - (2 * var(--content-pad))));
   padding: 24px var(--content-pad);
   gap: 0;
   margin: 0 auto;
@@ -813,7 +814,7 @@ body {
 }
 
 /* Laptop + scaled desktop: narrow rails, slightly tighter cards, hide heavy Spotify pod */
-@media (max-width: 1360px) {
+@media (max-width: 1320px) {
   :root {
     --widget-rail: 210px;
     --widget-panel-max: 188px;
