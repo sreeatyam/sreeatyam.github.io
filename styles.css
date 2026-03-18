@@ -815,14 +815,22 @@ body {
 /* Laptop + scaled desktop: narrow rails, slightly tighter cards, hide heavy Spotify pod */
 @media (max-width: 1360px) {
   :root {
-    --widget-rail: var(--widget-rail-laptop);
-    --widget-panel-max: 196px;
-    --spotify-panel-max: 280px;
+    --widget-rail: 210px;
+    --widget-panel-max: 188px;
+    --spotify-panel-max: 240px;
     --content-pad: 20px;
   }
 
   #wp-spotify {
-    display: none;
+    display: block;
+  }
+
+  #wp-spotify .widget-panel {
+    width: clamp(180px, 22vw, var(--spotify-panel-max));
+  }
+
+  #wp-spotify .widget-panel iframe {
+    height: clamp(72px, 7vw, 88px);
   }
 }
 
